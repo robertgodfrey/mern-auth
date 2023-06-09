@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import FormContainer from '../components/FormContainer.jsx';
+import { toast } from 'react-toastify';
 import { useLoginMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
+import FormContainer from '../components/FormContainer.jsx';
+import Loader from '../components/Loader.jsx';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +30,7 @@ const LoginScreen = () => {
       dispatch(setCredentials({ ...res }));
       navigate('/');
     } catch (err) {
-      console.log(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error);
     }
   };
 
@@ -54,6 +56,7 @@ const LoginScreen = () => {
               id="password" type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <div className="flex items-center justify-between">
+            { isLoading && <Loader /> }
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit">
