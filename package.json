@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node server/server.js",
     "server": "nodemon server/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "lint": "eslint --ext .js ."
   },
   "author": "Rob",
@@ -21,6 +23,7 @@
     "mongoose": "^7.2.2"
   },
   "devDependencies": {
+    "concurrently": "^8.1.0",
     "eslint": "^8.42.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.2",
