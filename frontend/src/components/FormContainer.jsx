@@ -2,13 +2,12 @@ import PropTypes from 'prop-types';
 
 const FormContainer = ({ children }) => {
   return (
-    <div className="container">
+    <div className="container mx-auto mt-10">
       { children }
     </div>
   );
 };
 
-// Require a component and location to be passed to each ProtectedRoute.
 FormContainer.propTypes = {
   children: PropTypes.any,
 };
