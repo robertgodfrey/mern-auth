@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useRegisterMutation } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
+import { useUpdateUserMutation } from '../slices/usersApiSlice';
 import FormContainer from '../components/FormContainer.jsx';
 import Loader from '../components/Loader.jsx';
 
-const RegisterScreen = () => {
+const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -16,14 +16,14 @@ const RegisterScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [register, { isLoading }] = useRegisterMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
+  const [updateProfile, { isLoading }] = useUpdateUserMutation();
+
   useEffect(() => {
-    if (userInfo) {
-      navigate('/');
-    }
-  }, [navigate, userInfo]);
+    setName(userInfo.name);
+    setEmail(userInfo.email);
+  }, [userInfo.setName, userInfo.setEmail]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -31,18 +31,23 @@ const RegisterScreen = () => {
       toast.error('Passwords do not match');
     } else {
       try {
-        const res = await register({ name, email, password }).unwrap();
+        const res = await updateProfile({
+          _id: userInfo._id,
+          name,
+          email,
+          password
+        }).unwrap();
         dispatch(setCredentials({ ...res }));
-        navigate('/');
+        toast.success('Profile successfully updated');
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        toast.error(err?.data?.messsage || err.error);
       }
     }
   };
 
   return (
     <FormContainer>
-      <div className="text-center text-3xl font-bold mt-6">Sign up</div>
+      <div className="text-center text-3xl font-bold mt-6">Update Profile</div>
       <div className="w-full max-w-xs mx-auto">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={submitHandler}>
           <div className="mb-4">
@@ -77,24 +82,18 @@ const RegisterScreen = () => {
               className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="confirmPassword" type="password" placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
+          {isLoading && <Loader />}
           <div className="flex items-center justify-between">
-            {isLoading && <Loader />}
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit">
-              Sign Up
+              Update
             </button>
-            <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
-              Forgot Password?
-            </a>
           </div>
         </form>
-        <p className="text-center text-gray-500 text-xs">
-          Here's a footer.
-        </p>
       </div>
     </FormContainer>
   );
 };
 
-export default RegisterScreen;
+export default ProfileScreen;

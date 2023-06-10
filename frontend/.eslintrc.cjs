@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn',
     'no-console': 'off',
+    'no-underscore-dangle': 'off',
     'import/no-extraneous-dependencies': ['error', {'devDependencies': true}]
   },
 }
